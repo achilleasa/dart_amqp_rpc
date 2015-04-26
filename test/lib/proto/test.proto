@@ -1,0 +1,9 @@
+
+message Invert {
+	required float number = 1;
+}
+
+// Special message used for reporting errors
+message RpcError {
+	required string message = 1;
+}

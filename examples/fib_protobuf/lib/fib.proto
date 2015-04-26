@@ -1,0 +1,13 @@
+message FibQuery {
+	required int32 number = 1;
+	optional bool use_recursion = 2 [default=false];
+}
+
+message FibValue {
+	required int32 number = 1;
+}
+
+// Special message used for reporting errors
+message RpcError {
+	required string message = 1;
+}
