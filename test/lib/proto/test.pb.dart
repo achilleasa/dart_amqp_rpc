@@ -1,10 +1,9 @@
 ///
 //  Generated code. Do not modify.
 ///
-library test;
+library test.proto.protobuf;
 
-import 'package:fixnum/fixnum.dart';
-import 'package:protobuf/protobuf.dart';
+import "package:protobuf/protobuf.dart";
 
 class Invert extends GeneratedMessage {
   static final BuilderInfo _i = new BuilderInfo('Invert')
