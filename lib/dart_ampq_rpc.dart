@@ -9,7 +9,7 @@ import "package:logging/logging.dart";
 
 import "src/analyzer.dart";
 import "src/codec.dart";
-export "src/codec.dart" show RpcCodec, JsonRpcCodec, ProtobufRpcCodec;
+export "src/codec.dart" show RpcCodec, JsonRpcCodec, ProtobufRpcCodec, MsgpackRpcCodec;
 
 part "src/logging.dart";
 part "src/rpc/rpc_server.dart";

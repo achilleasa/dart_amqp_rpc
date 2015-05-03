@@ -12,8 +12,8 @@ class RpcMethod {
   ClosureMirror implementation;
 
   // The rpc method arguments
-  Iterable<RpcArgument> argList;
+  List<RpcArgument> argList;
 
-  // The method eventual return type
-  ClassMirror returnType;
+  // The method eventual return type after the Future is evaluated
+  RpcArgument returnType;
 }

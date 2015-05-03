@@ -1,9 +1,17 @@
 part of dart_amqp_rpc.codec;
 
-abstract class ProtobufRpcCodec implements RpcCodec {
+abstract class MsgpackRpcCodec implements RpcCodec {
 
-  final ClassMirror protobufMessageMirror = reflectClass(pb.GeneratedMessage);
-  final Symbol protobufCtor = new Symbol("fromBuffer");
+  final Symbol fromListSymbol = new Symbol("fromList");
+  final msgpack.Packer packer = new msgpack.Packer();
+  final ClassMirror msgpackMessageMirror = reflectClass(msgpack.Message);
+
+  /**
+   * Create an [msgpack.Unpacker] for decoding [payload]
+   */
+  msgpack.Unpacker unpacker(Uint8List payload) {
+    return new msgpack.Unpacker(payload.buffer);
+  }
 
   /**
    * Validate the list of [rpcMethods] that were extracted from the RPC interface.
@@ -12,14 +20,14 @@ abstract class ProtobufRpcCodec implements RpcCodec {
   void validateRpcMethods(List<RpcMethod> rpcMethods) {
     rpcMethods.forEach((RpcMethod method) {
 
-      // Ensure that all RPC methods receive exactly one parameter extending GeneratedMessage
-      if (method.argList.length != 1 || !method.argList.first.valueMirror.isSubclassOf(protobufMessageMirror)) {
-        throw new Exception("RPC method '${method.fqName}' should accept exactly one argument extending protobuf runtime-provided GeneratedMessage class");
+      // Ensure that all RPC methods receive exactly one parameter extending Message
+      if (method.argList.length != 1 || !method.argList[0].valueMirror.isSubclassOf(msgpackMessageMirror)) {
+        throw new Exception("RPC method '${method.fqName}' should accept exactly one argument extending msgpack runtime-provided Message class");
       }
 
-      // Ensure that return type also extends GeneratedMessage
-      if (!method.returnType.valueMirror.isSubclassOf(protobufMessageMirror)) {
-        throw new Exception("RPC method '${method.fqName}' should return a value extending protobuf runtime-provided GeneratedMessage class");
+      // Ensure that return type also extends Message
+      if (!method.returnType.valueMirror.isSubclassOf(msgpackMessageMirror)) {
+        throw new Exception("RPC method '${method.fqName}' should return a value extending msgpack runtime-provided Message class");
       }
     });
   }
@@ -35,7 +43,11 @@ abstract class ProtobufRpcCodec implements RpcCodec {
    * be completed with the marshaled data or an [Error] if encoding fails.
    */
   Future<Uint8List> encodeRpcRequest(RpcMethod rpcMethod, List<Object> params) {
-    return new Future.value((params[0] as pb.GeneratedMessage).writeToBuffer());
+    Uint8List packedData = new Uint8List.fromList(
+        packer.packMessage((params[0] as msgpack.Message))
+    );
+
+    return new Future.value(packedData);
   }
 
   /**
@@ -49,13 +61,14 @@ abstract class ProtobufRpcCodec implements RpcCodec {
    * be completed with the unmarshaled list or an [Error] if decoding fails.
    */
   Future<List<Object>> decodeRpcRequest(RpcMethod rpcMethod, Uint8List request) {
-
     // Try decoding as the expected request message and return it back as a List so
     // we can attempt to invoke the RPC handling method
     try {
-      return new Future.value([
-        rpcMethod.argList.first.valueMirror.newInstance(protobufCtor, [ request ]).reflectee
-      ]);
+      msgpack.Unpacker unpacker = new msgpack.Unpacker(request.buffer);
+      msgpack.Message requestMessage = unpacker.unpackMessage(
+              (List fields) => rpcMethod.argList.first.valueMirror.invoke(fromListSymbol, [ fields ]).reflectee
+      );
+      return new Future.value([requestMessage]);
     } catch (e) {
       return new Future.error(e);
     }
@@ -77,8 +90,12 @@ abstract class ProtobufRpcCodec implements RpcCodec {
    */
   Future<Uint8List> encodeRpcResponse(RpcMethod rpcMethod, Future response) {
     return response
-    .then((responseValue) => new Future.value((responseValue as pb.GeneratedMessage).writeToBuffer()))
-    .catchError(encodeError);
+    .then((responseValue) {
+      Uint8List packedData = new Uint8List.fromList(
+          packer.packMessage(responseValue as msgpack.Message)
+      );
+      return new Future.value(packedData);
+    }, onError : encodeError);
   }
 
   /**
@@ -91,12 +108,14 @@ abstract class ProtobufRpcCodec implements RpcCodec {
    * to the method details (e.g. return type)
    */
   Future<Object> decodeRpcResponse(RpcMethod rpcMethod, Uint8List response) {
-
     // Try decoding as the expected type. If that fails try decoding as an error
     // As a fallback throw an ArgumentError
     try {
+      msgpack.Unpacker unpacker = new msgpack.Unpacker(response.buffer);
       return new Future.value(
-          rpcMethod.returnType.valueMirror.newInstance(protobufCtor, [ response ]).reflectee
+        unpacker.unpackMessage(
+                (List fields) => rpcMethod.returnType.valueMirror.invoke(fromListSymbol, [ fields ]).reflectee
+        )
       );
     } catch (_) {
       try {

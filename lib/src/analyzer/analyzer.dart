@@ -60,7 +60,7 @@ class Analyzer {
               (ParameterMirror pm) => new RpcArgument(
               MirrorSystem.getName(pm.simpleName),
               reflectClass(pm.type.reflectedType)
-          ));
+          )).toList(growable : false);
 
       // Analyze the method return type generics metadata
       // and try to identify the real return type after the
@@ -69,7 +69,7 @@ class Analyzer {
         TypeMirror returnTypeMirror = methodMirror.returnType.typeArguments[0];
         method.returnType = returnTypeMirror.simpleName == dynamic
           ? null
-          : reflectClass(returnTypeMirror.runtimeType);
+          : new RpcArgument(MirrorSystem.getName(returnTypeMirror.simpleName), returnTypeMirror);
       }
 
       methodList.add(method);

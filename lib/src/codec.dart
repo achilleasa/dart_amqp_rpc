@@ -15,4 +15,5 @@ import "analyzer.dart";
 part "codec/rpc_codec.dart";
 part "codec/impl/json_rpc_codec.dart";
 part "codec/impl/protobuf_rpc_codec.dart";
+part "codec/impl/msgpack_rpc_codec.dart";
 
