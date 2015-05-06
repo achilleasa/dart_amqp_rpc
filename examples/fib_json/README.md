@@ -34,7 +34,7 @@ The ```--num-servers``` option controls the number of spawned RPC servers. When 
 
 [FibonacciInterface](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_json/lib/src/fib_interface.dart) defines the RPC interface that is implemented by both [FibonnacciServer](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_json/lib/src/fib_server.dart) and [FibonacciClient](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_json/lib/src/fib_client.dart).
 
-The codec will transparently serializes/unserializes any RPC method arguments to/from JSON as long
+The codec will transparently serialize/unserialize any RPC method arguments to/from JSON as long
 as they can be encoded/decoded by the built-in ```dart:convert``` package.
 
 ## Things to try
