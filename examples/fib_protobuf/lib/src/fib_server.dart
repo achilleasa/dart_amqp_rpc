@@ -12,5 +12,5 @@ class FibonacciServer extends RpcServer implements FibonacciInterface {
     return new Future.value(result);
   }
 
-  FibonacciServer() : super.fromInterface(FibonacciInterface, methodPrefix : "protobuf", rpcCodec : new ProtobufCodec());
+  FibonacciServer() : super.fromInterface(FibonacciInterface, namespace : "protobuf", rpcCodec : new ProtobufCodec());
 }

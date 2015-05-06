@@ -50,7 +50,7 @@ main({bool enableLogger : true}) {
     });
 
     test("arg and return type analysis", () {
-      List<RpcMethod> rpcMethods = Analyzer.analyzeInterface(ValidInterface, methodPrefix : "rpc");
+      List<RpcMethod> rpcMethods = Analyzer.analyzeInterface(ValidInterface, namespace : "rpc");
       expect(rpcMethods.length, equals(2));
 
       // First method should have no return type (= dynamic) and a single argument of type int
@@ -79,7 +79,7 @@ main({bool enableLogger : true}) {
     });
 
     test("method implementation analysis", () {
-      List<RpcMethod> rpcMethods = Analyzer.analyzeInterface(ValidInterface, methodPrefix : "rpc", implementation : new ValidImpl());
+      List<RpcMethod> rpcMethods = Analyzer.analyzeInterface(ValidInterface, namespace : "rpc", implementation : new ValidImpl());
       expect(rpcMethods.length, equals(2));
 
       // First method should have no return type (= dynamic) and a single argument of type int

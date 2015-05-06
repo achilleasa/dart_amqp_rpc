@@ -7,14 +7,14 @@ class Analyzer {
    * optionally implemented by [implementation]. RPC candidates are methods
    * that return back a [Future].
    *
-   * An optional [methodPrefix] may be specified to build the fully qualified
+   * An optional [namespace] may be specified to build the fully qualified
    * rpc endpoint name so as to avoid name clashes between similarly named
    * methods by different interfaces.
    *
    * This method returns a [List<RpcMethod>] with the discovered methods or
    * throws an [ArgumentError] if reflection on [rpcInterface] fails.
    */
-  static List<RpcMethod> analyzeInterface(Type rpcInterface, { String methodPrefix, Object implementation}) {
+  static List<RpcMethod> analyzeInterface(Type rpcInterface, { String namespace, Object implementation}) {
 
     List<RpcMethod> methodList = [];
     Symbol dynamic = new Symbol("dynamic");
@@ -54,7 +54,7 @@ class Analyzer {
 
       RpcMethod method = new RpcMethod()
         ..symbolName = declName
-        ..fqName = "${methodPrefix}.${MirrorSystem.getName(declName)}"
+        ..fqName = "${namespace}.${MirrorSystem.getName(declName)}"
         ..implementation = methodImplMirror
         ..argList = methodMirror.parameters.map(
               (ParameterMirror pm) => new RpcArgument(

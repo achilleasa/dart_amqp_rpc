@@ -2,7 +2,7 @@ part of dart_ampq_rpc.examples.json;
 
 class FibonacciClient extends RpcClient implements FibonacciInterface {
 
-  FibonacciClient() : super.fromInterface(FibonacciInterface, methodPrefix : "json");
+  FibonacciClient() : super.fromInterface(FibonacciInterface, namespace : "json");
 
   /**
    * Delegate any unknown [invocation] to [RpcClient].

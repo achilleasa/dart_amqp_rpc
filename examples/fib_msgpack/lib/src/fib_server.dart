@@ -11,5 +11,5 @@ class FibonacciServer extends RpcServer implements FibonacciInterface {
     return new Future.value(new FibValue(value));
   }
 
-  FibonacciServer() : super.fromInterface(FibonacciInterface, methodPrefix : "msgpack", rpcCodec : new MsgpackCodec());
+  FibonacciServer() : super.fromInterface(FibonacciInterface, namespace : "msgpack", rpcCodec : new MsgpackCodec());
 }

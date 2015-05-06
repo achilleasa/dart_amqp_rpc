@@ -20,7 +20,7 @@ abstract class RpcClient {
   RpcCodec rpcCodec;
 
   // A prefix used for building the amqp queue name for each exposed rpc method
-  String methodPrefix;
+  String namespace;
 
   /**
    * Create a new [RpcClient] that serves as a dynamic proxy to the methods defined in [rpcInterface].
@@ -31,10 +31,10 @@ abstract class RpcClient {
    * If an invalid [rpcInterface] type is supplied or the supplied [rpcInterface] does not
    * define any methods returning [Future], an [ArgumentError] will be thrown.
    *
-   * An optional [methodPrefix] named parameter may be specified in order to namespace the
+   * An optional [namespace] named parameter may be specified in order to namespace the
    * exposed methods so as to avoid collisions with similarly named methods in other RPC
-   * endpoints. The RPC endpoint queue name is built by joining together the [methodPrefix]
-   * and the method name using '.' as a delimiter. If no [methodPrefix] is specified, the
+   * endpoints. The RPC endpoint queue name is built by joining together the [namespace]
+   * and the method name using '.' as a delimiter. If no [namespace] is specified, the
    * default "rpc" will be used
    *
    * The [RpcClient] delegates all RPC message marshalling/unmarshalling to an external [RpcCodec].
@@ -44,10 +44,10 @@ abstract class RpcClient {
    * An optional [client] named parameter may be specified to force a specific [client] instance
    * to be used. If not specified, a client with default arguments will be instanciated.
    */
-  RpcClient.fromInterface(Type rpcInterface, { String this.methodPrefix : "rpc", RpcCodec this.rpcCodec, Client client }) {
+  RpcClient.fromInterface(Type rpcInterface, { String this.namespace : "rpc", RpcCodec this.rpcCodec, Client client }) {
 
-    if (methodPrefix == null || methodPrefix.isEmpty) {
-      methodPrefix = "rpc";
+    if (namespace == null || namespace.isEmpty) {
+      namespace = "rpc";
     }
 
     // Create default client if not specified
@@ -70,7 +70,7 @@ abstract class RpcClient {
 
   void _scanRpcMethods(Type rpcInterface) {
     // Detect RPC methods
-    List<RpcMethod> rpcMethodList = Analyzer.analyzeInterface(rpcInterface, methodPrefix : methodPrefix);
+    List<RpcMethod> rpcMethodList = Analyzer.analyzeInterface(rpcInterface, namespace : namespace);
     if (rpcMethodList.isEmpty) {
       throw new ArgumentError("No RPC methods defined/implemented. Ensure that your RPC interface defines at least one method returning Future and that your RPC server implements it.");
     }

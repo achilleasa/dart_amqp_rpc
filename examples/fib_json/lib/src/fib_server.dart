@@ -11,5 +11,5 @@ class FibonacciServer extends RpcServer implements FibonacciInterface {
     return new Future.value(utils.fibIterative(n));
   }
 
-  FibonacciServer() : super.fromInterface(FibonacciInterface, methodPrefix : "json");
+  FibonacciServer() : super.fromInterface(FibonacciInterface, namespace : "json");
 }

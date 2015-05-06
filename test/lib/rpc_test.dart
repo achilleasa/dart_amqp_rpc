@@ -22,7 +22,7 @@ abstract class TestRpcInterface {
 
 class IncompatibleTestClient extends RpcClient implements TestRpcInterface {
 
-  IncompatibleTestClient(String methodPrefix, [amqp.Client client = null]) : super.fromInterface(IncompatibleInterface, methodPrefix : methodPrefix, client : client);
+  IncompatibleTestClient(String namespace, [amqp.Client client = null]) : super.fromInterface(IncompatibleInterface, namespace : namespace, client : client);
 
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -30,14 +30,14 @@ class IncompatibleTestClient extends RpcClient implements TestRpcInterface {
 
 class TestClient extends RpcClient implements TestRpcInterface {
 
-  TestClient(String methodPrefix, [amqp.Client client = null]) : super.fromInterface(TestRpcInterface, methodPrefix : methodPrefix, client : client);
+  TestClient(String namespace, [amqp.Client client = null]) : super.fromInterface(TestRpcInterface, namespace : namespace, client : client);
 
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class TestServer extends RpcServer implements TestRpcInterface {
 
-  TestServer(String methodPrefix, [amqp.Client client = null]) : super.fromInterface(TestRpcInterface, methodPrefix : methodPrefix, client : client);
+  TestServer(String namespace, [amqp.Client client = null]) : super.fromInterface(TestRpcInterface, namespace : namespace, client : client);
 
   Future<double> invert(double value) {
     if (value == 0) {
@@ -53,7 +53,7 @@ class TestServer extends RpcServer implements TestRpcInterface {
 }
 
 class IncompatibleTestServer extends RpcServer {
-  IncompatibleTestServer(String methodPrefix, [amqp.Client client = null]) : super.fromInterface(IncompatibleInterface, methodPrefix : methodPrefix, client : client);
+  IncompatibleTestServer(String namespace, [amqp.Client client = null]) : super.fromInterface(IncompatibleInterface, namespace : namespace, client : client);
 }
 
 main({bool enableLogger : true}) {
@@ -92,7 +92,7 @@ main({bool enableLogger : true}) {
         test("null method prefix", () {
           TestClient rpcClient = new TestClient(null);
 
-          expect(rpcClient.methodPrefix, equals("rpc"));
+          expect(rpcClient.namespace, equals("rpc"));
           return rpcClient
           .connect()
           .then((_) => rpcClient.close());
@@ -101,7 +101,7 @@ main({bool enableLogger : true}) {
         test("empty method prefix", () {
           TestClient rpcClient = new TestClient("");
 
-          expect(rpcClient.methodPrefix, equals("rpc"));
+          expect(rpcClient.namespace, equals("rpc"));
         });
 
         test("when using external client, client should remain open after rpc client closes", () {
@@ -114,7 +114,7 @@ main({bool enableLogger : true}) {
             extChannel = ch;
 
             rpcClient = new TestClient("test", extClient);
-            expect(rpcClient.methodPrefix, equals("test"));
+            expect(rpcClient.namespace, equals("test"));
 
             // Connect rpc client
             return rpcClient.connect();
@@ -145,7 +145,7 @@ main({bool enableLogger : true}) {
         test("null method prefix", () {
           TestServer rpcServer = new TestServer(null);
 
-          expect(rpcServer.methodPrefix, equals("rpc"));
+          expect(rpcServer.namespace, equals("rpc"));
           return rpcServer
           .connect()
           .then((_) => rpcServer.close());
@@ -154,7 +154,7 @@ main({bool enableLogger : true}) {
         test("empty method prefix", () {
           TestServer rpcServer = new TestServer("");
 
-          expect(rpcServer.methodPrefix, equals("rpc"));
+          expect(rpcServer.namespace, equals("rpc"));
         });
 
         test("when using external client, client should remain open after rpc server closes", () {
@@ -167,7 +167,7 @@ main({bool enableLogger : true}) {
             extChannel = ch;
 
             rpcServer = new TestServer("test", extClient);
-            expect(rpcServer.methodPrefix, equals("test"));
+            expect(rpcServer.namespace, equals("test"));
 
             // Connect rpc client
             return rpcServer.connect();
