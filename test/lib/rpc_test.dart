@@ -16,6 +16,8 @@ abstract class IncompatibleInterface {
 
 abstract class TestRpcInterface {
   Future<double> invert(double value);
+
+  Future<bool> methodThatFails();
 }
 
 class IncompatibleTestClient extends RpcClient implements TestRpcInterface {
@@ -43,6 +45,10 @@ class TestServer extends RpcServer implements TestRpcInterface {
     }
 
     return new Future.value(1.0 / value);
+  }
+
+  Future<bool> methodThatFails() {
+    return new Future.error(new UnimplementedError("Not implemented"));
   }
 }
 
@@ -200,10 +206,17 @@ main({bool enableLogger : true}) {
         }));
       });
 
-      test("exception handling", () {
+      test("exception handling (method throws)", () {
         rpcClient.invert(0.0)
         .catchError(expectAsync((e) {
           expect(e.toString(), equals("Invalid argument(s): Cannot calculate inverted value for input = 0"));
+        }));
+      });
+
+      test("exception handling (method returns failed Future)", () {
+        rpcClient.methodThatFails()
+        .catchError(expectAsync((e) {
+          expect(e.toString(), equals("UnimplementedError: Not implemented"));
         }));
       });
     });

@@ -4,9 +4,10 @@ part of dart_ampq_rpc.examples.msgpack;
 class MsgpackCodec extends MsgpackRpcCodec {
 
   /**
-   * Encode a caught [error] into a [Uint8List]
+   * Encode a caught [error] while invoking [rpcMethod] with [rpcArgs] into a [Uint8List].
+   * An optional stack [trace] may also be specified if available.
    */
-  Future<Uint8List> encodeError(Object error) {
+  Future<Uint8List> encodeError(RpcMethod rpcMethod, List<Object> rpcArgs, Object error, {StackTrace trace}) {
     RpcError errorMessage = new RpcError(error.toString());
 
     return new Future.value(new Uint8List.fromList(packer.packMessage(errorMessage)));

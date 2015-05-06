@@ -15,7 +15,7 @@ import "logger/logger.dart";
 
 class ProtobufCodec extends ProtobufRpcCodec {
 
-  Future<Uint8List> encodeError(Object error) {
+  Future<Uint8List> encodeError(RpcMethod rpcMethod, List<Object> rpcArgs, Object error, {StackTrace trace}) {
     pb.RpcError errorMessage = new pb.RpcError()
       ..message = error.toString();
 
@@ -32,7 +32,7 @@ class ProtobufCodec extends ProtobufRpcCodec {
 
 class MsgpackCodec extends MsgpackRpcCodec {
 
-  Future<Uint8List> encodeError(Object error) {
+  Future<Uint8List> encodeError(RpcMethod rpcMethod, List<Object> rpcArgs, Object error, {StackTrace trace}) {
     mp.RpcError errorMessage = new mp.RpcError(error.toString());
 
     return new Future.value(new Uint8List.fromList(packer.packMessage(errorMessage)));
@@ -96,7 +96,7 @@ main({bool enableLogger : true}) {
       });
 
       test("encodeRpcResponse", () {
-        dynamic encRes = new Future.value(200);
+        dynamic encRes = 200;
 
         codec.encodeRpcResponse(method, encRes)
         .then(expectAsync((Uint8List payload) {
@@ -106,19 +106,8 @@ main({bool enableLogger : true}) {
         }));
       });
 
-      test("encodeRpcResponse with error", () {
-        dynamic encRes = new Future.error(new ArgumentError("arg error"));
-
-        codec.encodeRpcResponse(method, encRes)
-        .then(expectAsync((Uint8List payload) {
-          dynamic data = JSON.decode(new String.fromCharCodes(payload));
-          expect(data, new isInstanceOf<Map>());
-          expect(data, equals({"error" : "Invalid argument(s): arg error"}));
-        }));
-      });
-
       test("decodeRpcResponse", () {
-        dynamic encRes = new Future.value(200);
+        dynamic encRes = 200;
 
         codec.encodeRpcResponse(method, encRes)
         .then((Uint8List payload) => codec.decodeRpcResponse(method, payload))
@@ -128,9 +117,7 @@ main({bool enableLogger : true}) {
       });
 
       test("decodeRpcResponse with error", () {
-        dynamic encRes = new Future.error(new ArgumentError("arg error"));
-
-        codec.encodeRpcResponse(method, encRes)
+        codec.encodeError(method, [], new ArgumentError("arg error"))
         .then((Uint8List payload) => codec.decodeRpcResponse(method, payload))
         .catchError(expectAsync((e) {
           expect(e.toString(), contains("arg error"));
@@ -188,7 +175,7 @@ main({bool enableLogger : true}) {
 
       test("encodeRpcResponse / decodeRpcResponse", () {
 
-        codec.encodeRpcResponse(method, new Future.value(testMessage))
+        codec.encodeRpcResponse(method, testMessage)
         .then((Uint8List payload) => codec.decodeRpcResponse(method, payload))
         .then(expectAsync((dynamic data) {
           expect(data, new isInstanceOf<pb.Invert>());
@@ -198,10 +185,10 @@ main({bool enableLogger : true}) {
 
       test("encodeRpcResponse / decodeRpcResponse with error", () {
 
-        codec.encodeRpcResponse(method, new Future.error(new ArgumentError("invalid arg")))
+        codec.encodeError(method, [], new ArgumentError("arg error"))
         .then((Uint8List payload) => codec.decodeRpcResponse(method, payload))
         .catchError(expectAsync((dynamic data) {
-          expect(data.toString(), contains("invalid arg"));
+          expect(data.toString(), contains("arg error"));
         }));
       });
 
@@ -331,20 +318,11 @@ main({bool enableLogger : true}) {
 
       test("encodeRpcResponse / decodeRpcResponse", () {
 
-        codec.encodeRpcResponse(method, new Future.value(testMessage))
+        codec.encodeRpcResponse(method, testMessage)
         .then((Uint8List payload) => codec.decodeRpcResponse(method, payload))
         .then(expectAsync((dynamic data) {
           expect(data, new isInstanceOf<mp.Invert>());
           expect((data as mp.Invert).flag, equals(true));
-        }));
-      });
-
-      test("encodeRpcResponse / decodeRpcResponse with error", () {
-
-        codec.encodeRpcResponse(method, new Future.error(new ArgumentError("invalid arg")))
-        .then((Uint8List payload) => codec.decodeRpcResponse(method, payload))
-        .catchError(expectAsync((dynamic data) {
-          expect(data.toString(), contains("invalid arg"));
         }));
       });
 

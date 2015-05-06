@@ -13,5 +13,8 @@ void initLogger() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
     print("[${rec.level.name}]\t[${rec.time}]\t[${rec.loggerName}]:\t${rec.message}");
+    if( rec.stackTrace != null ){
+      print("[${rec.level.name}]\t[${rec.time}]\t[${rec.loggerName}]:\t${rec.stackTrace}");
+    }
   });
 }

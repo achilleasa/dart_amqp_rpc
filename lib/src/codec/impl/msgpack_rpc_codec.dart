@@ -75,27 +75,20 @@ abstract class MsgpackRpcCodec implements RpcCodec {
   }
 
   /**
-   * Evaluate the RPC method [response] and encode it to
-   * a [Uint8List] to server as the amqp response message payload
+   * Encode the RPC method [response] into a [Uint8List] so that it can be
+   * used as the amqp response message payload
    *
    * The [rpcMethod] is also provided for implementations that need access
    * to the method details (e.g. return type)
    *
-   * This method should also handle cases where [response] completes
-   * with an error and appropriately encode the error so it can be
-   * unpacked and reported by the RPC client.
-   *
    * This method is expected to work asynchronously and return a [Future] to
    * be completed with the marshaled data or an [Error] if encoding fails.
    */
-  Future<Uint8List> encodeRpcResponse(RpcMethod rpcMethod, Future response) {
-    return response
-    .then((responseValue) {
-      Uint8List packedData = new Uint8List.fromList(
-          packer.packMessage(responseValue as msgpack.Message)
-      );
-      return new Future.value(packedData);
-    }, onError : encodeError);
+  Future<Uint8List> encodeRpcResponse(RpcMethod rpcMethod, Object response) {
+    Uint8List packedData = new Uint8List.fromList(
+        packer.packMessage(response as msgpack.Message)
+    );
+    return new Future.value(packedData);
   }
 
   /**

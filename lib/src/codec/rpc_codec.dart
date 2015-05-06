@@ -38,20 +38,16 @@ abstract class RpcCodec {
   Future<List<Object>> decodeRpcRequest(RpcMethod rpcMethod, Uint8List request);
 
   /**
-   * Evaluate the RPC method [response] and encode it to
-   * a [Uint8List] to server as the amqp response message payload
+   * Encode the RPC method [response] into a [Uint8List] so that it can be
+   * used as the amqp response message payload
    *
    * The [rpcMethod] is also provided for implementations that need access
    * to the method details (e.g. return type)
    *
-   * This method should also handle cases where [response] completes
-   * with an error and appropriately encode the error so it can be
-   * unpacked and reported by the RPC client.
-   *
    * This method is expected to work asynchronously and return a [Future] to
    * be completed with the marshaled data or an [Error] if encoding fails.
    */
-  Future<Uint8List> encodeRpcResponse(RpcMethod rpcMethod, Future response);
+  Future<Uint8List> encodeRpcResponse(RpcMethod rpcMethod, Object response);
 
   /**
    * Decode the [response] of a pending RPC call and return back
@@ -65,9 +61,10 @@ abstract class RpcCodec {
   Future<Object> decodeRpcResponse(RpcMethod rpcMethod, Uint8List response);
 
   /**
-   * Encode a caught [error] into a [Uint8List]
+   * Encode a caught [error] while invoking [rpcMethod] with [rpcArgs] into a [Uint8List].
+   * An optional stack [trace] may also be specified if available.
    */
-  Future<Uint8List> encodeError(Object error);
+  Future<Uint8List> encodeError(RpcMethod rpcMethod, List<Object> rpcArgs, Object error, {StackTrace trace});
 
   /**
    * Decode a [response] containing a caught error message and
