@@ -125,10 +125,13 @@ Future<List<int>> multiplex(){
 }
 ```
 
-Before writing your RPC server and client you need to first define your RPC method interface.
+## RPC method interface
 
-At this point, the library does **not** support methods with named parameters. Named parameters will be ignored
-when encoding/decoding RPC requests.
+Before writing your RPC server and client you need to first define your RPC method interface. This interface should be implemented by both the server and the client. When defining your interface keep in mind the following rules:
+
+- Your RPC methods should return ```Future```; otherwise, they will be ignored.
+- When using the protobuf codec, make sure you include the **type** on all arguments (input and output). The codec relies on this information to invoke the appropriate message constructors when processing incoming requests or responses.
+- At this point, the library does not handling of named parameters to make it easier to interface with other languages that do not provide support for this feature. As a result, named parameters will be ignored when encoding/decoding RPC requests.
 
 ## RPC Server
 
