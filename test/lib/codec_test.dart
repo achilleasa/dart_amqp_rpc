@@ -10,7 +10,6 @@ import "../../lib/src/codec.dart";
 import "../../lib/src/analyzer.dart";
 
 import "proto/test.pb.dart" as pb;
-import "proto/test.msgpack.dart" as mp;
 import "logger/logger.dart";
 
 class ProtobufCodec extends ProtobufRpcCodec {
@@ -25,22 +24,6 @@ class ProtobufCodec extends ProtobufRpcCodec {
   Future<Object> decodeError(Uint8List response) {
     return new Future.error(
         new pb.RpcError.fromBuffer(response)
-    );
-  }
-
-}
-
-class MsgpackCodec extends MsgpackRpcCodec {
-
-  Future<Uint8List> encodeError(RpcMethod rpcMethod, List<Object> rpcArgs, Object error, {StackTrace trace}) {
-    mp.RpcError errorMessage = new mp.RpcError(error.toString());
-
-    return new Future.value(new Uint8List.fromList(packer.packMessage(errorMessage)));
-  }
-
-  Future<Object> decodeError(Uint8List response) {
-    return new Future.error(
-        unpacker(response).unpackMessage(mp.RpcError.fromList)
     );
   }
 
@@ -264,134 +247,6 @@ main({bool enableLogger : true}) {
           .catchError(expectAsync((e) {
             expect(e.toString(), contains("InvalidProtocolBufferException"));
           }));
-        });
-
-      });
-    });
-
-    group("msgpack", () {
-      MsgpackCodec codec;
-      RpcMethod method;
-      mp.Invert testMessage;
-
-      setUp(() {
-        codec = new MsgpackCodec();
-        method = new RpcMethod()
-          ..symbolName = new Symbol("foo")
-          ..fqName = "rpc.foo"
-          ..returnType = new RpcArgument("invert", reflectClass(mp.Invert))
-          ..implementation = reflect((mp.Invert value) {
-          value.flag = true;
-          return value;
-        })
-          ..argList = [
-          new RpcArgument("value", reflectClass(mp.Invert))
-        ];
-
-        testMessage = new mp.Invert(true);
-      });
-
-      test("encodeRpcRequest / decodeRpcRequest", () {
-        dynamic encReq = codec.encodeRpcRequest(method, [ testMessage ]);
-        expect(encReq, new isInstanceOf<Future>());
-
-        encReq
-        .then((Uint8List payload) => codec.decodeRpcRequest(method, payload))
-        .then(expectAsync((List args) {
-          expect(args.length, equals(1));
-          mp.Invert message = args.first;
-          expect(message.flag, equals(true));
-        }));
-      });
-
-      test("encodeRpcRequest with error", () {
-
-        codec.encodeRpcRequest(method, [ testMessage ])
-        .then((Uint8List payload) => codec.decodeRpcRequest(method, payload))
-        .then(expectAsync((dynamic payload) {
-          expect(payload, new isInstanceOf<List>());
-          dynamic data = (payload as List).first;
-          expect(data, new isInstanceOf<mp.Invert>());
-          expect((data as mp.Invert).flag, equals(true));
-        }));
-      });
-
-      test("encodeRpcResponse / decodeRpcResponse", () {
-
-        codec.encodeRpcResponse(method, testMessage)
-        .then((Uint8List payload) => codec.decodeRpcResponse(method, payload))
-        .then(expectAsync((dynamic data) {
-          expect(data, new isInstanceOf<mp.Invert>());
-          expect((data as mp.Invert).flag, equals(true));
-        }));
-      });
-
-      group("exceptions:", () {
-        test("method not accepting a single msgpack argument", () {
-
-          method = new RpcMethod()
-            ..symbolName = new Symbol("foo")
-            ..fqName = "rpc.foo"
-            ..returnType = new RpcArgument("invert", reflectClass(mp.Invert))
-            ..argList = [
-            new RpcArgument("value", reflectClass(int))
-          ];
-
-          expect(
-                  () => codec.validateRpcMethods([ method ]),
-              throwsA((e) => e is Exception && e.toString().indexOf("should accept exactly one argument extending msgpack runtime-provided Message class") != -1)
-          );
-        });
-
-        test("method not accepting > 1 msgpack arguments", () {
-
-          method = new RpcMethod()
-            ..symbolName = new Symbol("foo")
-            ..fqName = "rpc.foo"
-            ..returnType = new RpcArgument("invert", reflectClass(mp.Invert))
-            ..argList = [
-            new RpcArgument("value1", reflectClass(mp.Invert)),
-            new RpcArgument("value2", reflectClass(mp.Invert))
-          ];
-
-          expect(
-                  () => codec.validateRpcMethods([ method ]),
-              throwsA((e) => e is Exception && e.toString().indexOf("should accept exactly one argument extending msgpack runtime-provided Message class") != -1)
-          );
-        });
-
-        test("method not returning a msgpack message", () {
-
-          method = new RpcMethod()
-            ..symbolName = new Symbol("foo")
-            ..fqName = "rpc.foo"
-            ..returnType = new RpcArgument("int", reflectClass(int))
-            ..argList = [
-            new RpcArgument("value", reflectClass(mp.Invert))
-          ];
-
-          expect(
-                  () => codec.validateRpcMethods([ method ]),
-              throwsA((e) => e is Exception && e.toString().indexOf("should return a value extending msgpack runtime-provided Message class") != -1)
-          );
-        });
-
-        test("error decoding request", () {
-          Uint8List invalidData = new Uint8List.fromList([0xF0, 00]);
-          codec.decodeRpcRequest(method, invalidData)
-          .catchError(expectAsync((e){}));
-        });
-
-        test("error decoding response", () {
-          Uint8List invalidData = new Uint8List.fromList([0xF0, 00]);
-          codec.decodeRpcResponse(method, invalidData)
-          .catchError(expectAsync((e){}));
-        });
-
-        test("error decoding request", () {
-          Uint8List invalidData = new Uint8List.fromList([0xF0, 00]);
-          codec.decodeRpcRequest(method, invalidData)
-          .catchError(expectAsync((e){}));
         });
 
       });

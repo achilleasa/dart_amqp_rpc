@@ -2,7 +2,7 @@
 
 This example shows how to use ```dart_amqp_rpc``` using [protocol buffers](https://developers.google.com/protocol-buffers/) as the RPC message exchange format. 
 
-The ```dart_amqp_rpc``` library internally uses the [dart-protobuf](https://pub.dartlang.org/packages/protobuf) runtime library to provide protocol-buffer support.
+The ```dart_amqp_rpc``` library internally uses the [dart-protobuf](https://pub.dartlang.org/packages/protobuf) runtime library to provide protocol buffer support.
 
 ## Running the example
 
