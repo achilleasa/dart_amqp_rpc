@@ -6,7 +6,7 @@
 An opionated library for performing RPC over AMQP using JSON, protocol buffers
 or custom user-defined codecs.
 
-The library depends on AMQP functionality provided by the [dart_amqp](https://github.com/achilleasa/dart_amqp.git) package.
+The library depends on AMQP functionality provided by the [dart_amqp](https://github.com/achilleasa/dart_amqp) package.
 
 # Quick start
 
@@ -208,3 +208,7 @@ pass it to the RpcServer/RpcClient constructor via the ```rpcCodec``` named para
 # Examples
 
 The [examples](https://github.com/achilleasa/dart_amqp_rpc/tree/master/examples) folder contains detailed examples on using this library to provide a fibonacci calculator service using **JSON** and **protocol buffers** as the messaging codecs.
+
+# License
+
+dart\_amqp\_rpc is distributed under the MIT license.
