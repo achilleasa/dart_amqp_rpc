@@ -1,4 +1,4 @@
-library dart_ampq_rpc.examples.options;
+library dart_amqp_rpc.examples.options;
 
 import "dart:io";
 

@@ -1,8 +1,8 @@
-library dart_ampq_rpc.examples.protobuf;
+library dart_amqp_rpc.examples.protobuf;
 
 import "dart:async";
 import "dart:typed_data";
-import "package:dart_amqp_rpc/dart_ampq_rpc.dart";
+import "package:dart_amqp_rpc/dart_amqp_rpc.dart";
 import "../../shared/utils.dart" as utils;
 
 import "src/proto/fib.pb.dart";

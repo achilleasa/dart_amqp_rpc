@@ -1,4 +1,4 @@
-library dart_ampq_rpc.examples.utils;
+library dart_amqp_rpc.examples.utils;
 
 /**
  * Recursive implementation of fibonacci calculator

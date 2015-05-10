@@ -1,4 +1,4 @@
-part of dart_ampq_rpc.examples.json;
+part of dart_amqp_rpc.examples.json;
 
 // The RPC server
 class FibonacciServer extends RpcServer implements FibonacciInterface {

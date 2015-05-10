@@ -3,7 +3,7 @@ library dart_amqp_rpc.test.rpc;
 import "dart:async";
 
 import "../../packages/unittest/unittest.dart";
-import "../../packages/dart_amqp_rpc/dart_ampq_rpc.dart";
+import "../../packages/dart_amqp_rpc/dart_amqp_rpc.dart";
 import "package:dart_amqp/dart_amqp.dart" as amqp;
 
 import "logger/logger.dart";

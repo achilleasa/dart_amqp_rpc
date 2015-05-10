@@ -1,4 +1,4 @@
-# dart\_ampq\_rpc : protobuf codec example
+# dart\_amqp\_rpc : protobuf codec example
 
 This example shows how to use ```dart_amqp_rpc``` using [protocol buffers](https://developers.google.com/protocol-buffers/) as the RPC message exchange format. 
 

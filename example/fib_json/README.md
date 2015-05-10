@@ -1,4 +1,4 @@
-# dart\_ampq\_rpc : JSON codec example
+# dart\_amqp\_rpc : JSON codec example
 
 This example shows how to use ```dart_amqp_rpc``` using JSON as the RPC message exchange format. The library uses
 the JSON codec by default if no codec is specified when instanciating the client or the server.

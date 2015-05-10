@@ -1,4 +1,4 @@
-part of dart_ampq_rpc.examples.protobuf;
+part of dart_amqp_rpc.examples.protobuf;
 
 // The RPC interface
 abstract class FibonacciInterface {

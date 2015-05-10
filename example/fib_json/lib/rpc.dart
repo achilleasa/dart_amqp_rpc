@@ -1,7 +1,7 @@
-library dart_ampq_rpc.examples.json;
+library dart_amqp_rpc.examples.json;
 
 import "dart:async";
-import "package:dart_amqp_rpc/dart_ampq_rpc.dart";
+import "package:dart_amqp_rpc/dart_amqp_rpc.dart";
 import "../../shared/utils.dart" as utils;
 
 part "src/fib_interface.dart";
