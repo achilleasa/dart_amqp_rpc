@@ -33,12 +33,12 @@ The ```--num-servers``` option controls the number of spawned RPC servers. When 
 
 ## The parts of the demo
 
-[FibonacciInterface](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_protobuf/lib/src/fib_interface.dart) defines the RPC interface that is implemented by both [FibonnacciServer](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_protobuf/lib/src/fib_server.dart) and [FibonacciClient](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_protobuf/lib/src/fib_client.dart).
+[FibonacciInterface](https://github.com/achilleasa/dart_amqp_rpc/blob/master/e/fib_protobuf/lib/src/fib_interface.dart) defines the RPC interface that is implemented by both [FibonnacciServer](https://github.com/achilleasa/dart_amqp_rpc/blob/master/example/fib_protobuf/lib/src/fib_server.dart) and [FibonacciClient](https://github.com/achilleasa/dart_amqp_rpc/blob/master/example/fib_protobuf/lib/src/fib_client.dart).
 
-For this demo, I have defined 3 protocol buffer messages. The original protocol definition [file](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_protobuf/lib/src/proto/fib.proto) was passed through the dart [protoc](https://github.com/dart-lang/dart-protoc-plugin) plugin to generate the
-message [classes](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_protobuf/lib/src/proto/fib.pb.dart) that are used for the RPC request, response and error reporting.
+For this demo, I have defined 3 protocol buffer messages. The original protocol definition [file](https://github.com/achilleasa/dart_amqp_rpc/blob/master/example/fib_protobuf/lib/src/proto/fib.proto) was passed through the dart [protoc](https://github.com/dart-lang/dart-protoc-plugin) plugin to generate the
+message [classes](https://github.com/achilleasa/dart_amqp_rpc/blob/master/example/fib_protobuf/lib/src/proto/fib.pb.dart) that are used for the RPC request, response and error reporting.
 
-The protobuf [codec](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_protobuf/lib/src/protobuf_codec.dart) extends the library-provided abstract [ProtobufRpcCodec](https://github.com/achilleasa/dart_amqp_rpc/blob/master/lib/src/codec/impl/protobuf_rpc_codec.dart) and provides the required error-handling methods that wrap any caught error into our designated RPC error message (server-side) and unpack it accordingly on the client-side.
+The protobuf [codec](https://github.com/achilleasa/dart_amqp_rpc/blob/master/example/fib_protobuf/lib/src/protobuf_codec.dart) extends the library-provided abstract [ProtobufRpcCodec](https://github.com/achilleasa/dart_amqp_rpc/blob/master/lib/src/codec/impl/protobuf_rpc_codec.dart) and provides the required error-handling methods that wrap any caught error into our designated RPC error message (server-side) and unpack it accordingly on the client-side.
 
 ## Things to try
 

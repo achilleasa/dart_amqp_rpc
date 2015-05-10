@@ -198,7 +198,7 @@ This codec imposes additional constraints on the way you implement your RPC meth
 In addition, the [ProtobufRpcCodec](https://github.com/achilleasa/dart_amqp_rpc/blob/master/lib/src/codec/impl/protobuf_rpc_codec.dart) is defined as **abstract** as it does not implement the required methods for encoding and decoding errors. Since protocol buffers do not define any special message for reporting errors you need to declare a message dedicated to error reporting and then define you own codec implementation
 that provides the missing error encoding/decoding functions. 
 
-For an example see the [codec](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_protobuf/lib/src/protobuf_codec.dart) implementation for the [fib_protobuf](https://github.com/achilleasa/dart_amqp_rpc/blob/master/examples/fib_protobuf) demo.
+For an example see the [codec](https://github.com/achilleasa/dart_amqp_rpc/blob/master/example/fib_protobuf/lib/src/protobuf_codec.dart) implementation for the [fib_protobuf](https://github.com/achilleasa/dart_amqp_rpc/blob/master/example/fib_protobuf) demo.
 
 ### User-defined codecs
 
@@ -207,7 +207,7 @@ pass it to the RpcServer/RpcClient constructor via the ```rpcCodec``` named para
 
 # Examples
 
-The [examples](https://github.com/achilleasa/dart_amqp_rpc/tree/master/examples) folder contains detailed examples on using this library to provide a fibonacci calculator service using **JSON** and **protocol buffers** as the messaging codecs.
+The [example](https://github.com/achilleasa/dart_amqp_rpc/tree/master/example) folder contains detailed example on using this library to provide a fibonacci calculator service using **JSON** and **protocol buffers** as the messaging codecs.
 
 # License
 
