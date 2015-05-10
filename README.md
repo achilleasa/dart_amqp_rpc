@@ -106,7 +106,7 @@ void main(){
 }
 ```
 
-# API
+# Api
 
 
 The library uses ```dart:mirrors``` to analyze the interface describing your service and detect any methods that
@@ -211,4 +211,4 @@ The [examples](https://github.com/achilleasa/dart_amqp_rpc/tree/master/examples)
 
 # License
 
-dart\_amqp\_rpc is distributed under the MIT license.
+dart\_amqp\_rpc is distributed under the [MIT license](https://github.com/achilleasa/dart_amqp_rpc/blob/master/LICENSE).
